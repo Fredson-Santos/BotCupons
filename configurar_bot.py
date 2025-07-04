@@ -42,6 +42,7 @@ def criar_arquivo_env():
     print("")
     print("⚙️ Configuração opcional:")
     palavras_chave = input("🔎 Palavras-chave para filtrar mensagens (separadas por vírgula, opcional): ").strip()
+    palavras_bloqueadas = input("🚫 Palavras bloqueadas (mensagens com essas palavras NÃO serão enviadas, separadas por vírgula, opcional): ").strip()
     substituicoes = input("🔄 Substituições (formato: palavra_original:nova_palavra, separadas por vírgula, opcional): ").strip()
 
     conteudo = f"""# ========================================
@@ -55,6 +56,7 @@ CANAL_DESTINO={canal_destino}
 SHOPEE_APP_ID={shopee_app_id}
 SHOPEE_SECRET={shopee_secret}
 PALAVRAS_CHAVE={palavras_chave}
+PALAVRAS_BLOQUEADAS={palavras_bloqueadas}
 SUBSTITUICOES={substituicoes}
 """
 
@@ -99,6 +101,11 @@ def mostrar_ajuda():
     print("🔎 PALAVRAS-CHAVE:")
     print("• Se quiser filtrar mensagens, informe palavras separadas por vírgula (ex: Shopee, cupom, oferta)")
     print("• Deixe em branco para encaminhar todas as mensagens.")
+    print("")
+    print("🚫 PALAVRAS BLOQUEADAS:")
+    print("• Mensagens que contenham essas palavras NÃO serão enviadas")
+    print("• Separe por vírgula (ex: spam, propaganda, teste)")
+    print("• Deixe em branco para não bloquear nenhuma palavra")
     print("")
     print("🔄 SUBSTITUIÇÕES:")
     print("• Formato: palavra_original:nova_palavra")
