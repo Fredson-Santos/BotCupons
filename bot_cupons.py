@@ -91,6 +91,8 @@ class Configuracao:
         self.shopee_app_id = os.getenv('SHOPEE_APP_ID')
         self.shopee_secret = os.getenv('SHOPEE_SECRET')
         self.palavras_chave = [p.strip().lower() for p in os.getenv('PALAVRAS_CHAVE', '').split(',') if p.strip()]
+        # Lista de palavras bloqueadas (mensagens com essas palavras não serão enviadas)
+        self.palavras_bloqueadas = [p.strip().lower() for p in os.getenv('PALAVRAS_BLOQUEADAS', '').split(',') if p.strip()]
         # Mapeamento de palavras para substituir (formato: palavra_original:nova_palavra)
         substituicoes_raw = os.getenv('SUBSTITUICOES', '')
         self.substituicoes = {}
@@ -139,9 +141,24 @@ async def substituir_links_shopee(texto):
 async def handler(event):
     mensagem = event.message
     texto = mensagem.text or mensagem.message or ''
+    
+    # Verificar se a mensagem contém links Shopee
+    links_shopee = re.findall(REGEX_SHOPEE, texto)
+    if not links_shopee:
+        print(f"[IGNORADO] Mensagem sem links Shopee: {texto[:50]}...")
+        return
+    
+    # Verificar palavras-chave (se configuradas)
     if config.palavras_chave:
         if not any(p in texto.lower() for p in config.palavras_chave):
             return
+    
+    # Verificar palavras bloqueadas
+    if config.palavras_bloqueadas:
+        if any(p in texto.lower() for p in config.palavras_bloqueadas):
+            print(f"[BLOQUEADO] Mensagem bloqueada por conter palavra proibida: {texto[:50]}...")
+            return
+    
     # Substituir links Shopee
     texto_modificado = await substituir_links_shopee(texto)
     # Substituir palavras específicas
@@ -157,6 +174,11 @@ if __name__ == '__main__':
     print("Bot de Cupons iniciado. Monitorando mensagens...")
     print(f"Canais de origem: {config.canais_origem}")
     print(f"Canal de destino: {config.canal_destino}")
+    print("🔗 Apenas mensagens com links Shopee serão processadas")
+    if config.palavras_chave:
+        print(f"Palavras-chave filtradas: {config.palavras_chave}")
+    if config.palavras_bloqueadas:
+        print(f"Palavras bloqueadas: {config.palavras_bloqueadas}")
     if config.substituicoes:
         print(f"Substituições configuradas: {config.substituicoes}")
     with client:
