@@ -170,16 +170,20 @@ async def handler(event):
         await client.send_message(config.canal_destino, texto_modificado)
         print(f"[OK] Mensagem de texto encaminhada para {config.canal_destino}")
 
+def iniciar_bot():
+    while True:
+        try:
+            print("Bot de Cupons iniciado. Monitorando mensagens...")
+            print(f"Canais de origem: {config.canais_origem}")
+            print(f"Canal de destino: {config.canal_destino}")
+            if config.substituicoes:
+                print(f"Substituições configuradas: {config.substituicoes}")
+            with client:
+                client.run_until_disconnected()
+        except Exception as e:
+            print(f"[ERRO] O bot parou devido a: {e}")
+            print("Tentando reiniciar em 10 segundos...")
+            time.sleep(10)
+
 if __name__ == '__main__':
-    print("Bot de Cupons iniciado. Monitorando mensagens...")
-    print(f"Canais de origem: {config.canais_origem}")
-    print(f"Canal de destino: {config.canal_destino}")
-    print("🔗 Apenas mensagens com links Shopee serão processadas")
-    if config.palavras_chave:
-        print(f"Palavras-chave filtradas: {config.palavras_chave}")
-    if config.palavras_bloqueadas:
-        print(f"Palavras bloqueadas: {config.palavras_bloqueadas}")
-    if config.substituicoes:
-        print(f"Substituições configuradas: {config.substituicoes}")
-    with client:
-        client.run_until_disconnected() 
+    iniciar_bot() 
