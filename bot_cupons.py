@@ -143,10 +143,10 @@ async def handler(event):
     texto = mensagem.text or mensagem.message or ''
     
     # Verificar se a mensagem contém links Shopee
-    links_shopee = re.findall(REGEX_SHOPEE, texto)
-    if not links_shopee:
-        print(f"[IGNORADO] Mensagem sem links Shopee: {texto[:50]}...")
-        return
+    #links_shopee = re.findall(REGEX_SHOPEE, texto)
+    #if not links_shopee:
+        #print(f"[IGNORADO] Mensagem sem links Shopee: {texto[:50]}...")
+        #return
     
     # Verificar palavras-chave (se configuradas)
     if config.palavras_chave:
